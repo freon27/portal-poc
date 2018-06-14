@@ -1,0 +1,14 @@
+[
+    {
+        "name": "app1",
+        "selector": "app1-root",
+        "baseHref": "/app1",
+        "matchRoute": "app1"
+    },
+    {
+        "name": "app2",
+        "selector": "app2-root",
+        "baseHref": "/app2",
+        "matchRoute": "app2"
+    }
+]
