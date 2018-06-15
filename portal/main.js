@@ -67,8 +67,9 @@ for (const application of applications) {
                     break;
                 case ApplicationType.REACT:
                     console.log(`Loading react app ${application.name}`);
-                    //return SystemJS.import(`${application.baseHref}/static/js/main.884d7dc1.js`)
-                    return loadScriptTag(`${application.baseHref}/static/js/main.884d7dc1.js`);
+                    return SystemJS.import(`${application.baseHref}/static/elements.js`)
+                    return SystemJS.import(`${application.baseHref}/static/elements.css`)
+                    //return loadScriptTag(`${application.baseHref}/static/js/${buildArtefact}`);
 
             }
         })(),

@@ -104,7 +104,7 @@ function getProxyConfig(applications, devApplications) {
             target: target,
             bypass: function (req, res, proxyOptions) {
                 if (req && req.headers && req.headers.accept && req.headers.accept.indexOf('html') !== -1) {
-                    console.log('bypass');
+                    console.log('bypass', req.originalUrl);
                     return '/index.html';
                 }
             }
