@@ -14,10 +14,17 @@
     "type": "ng-cli"
   },
   {
+    "name": "reactchild",
+    "selector": "reactchild",
+    "baseHref": "/react",
+    "matchRoute": "react",
+    "type": "react"
+  },
+  {
     "name": "header",
     "selector": "header",
     "baseHref": "/header/",
-    "matchRoute": "header",
+    "matchRoute": "**",
     "type": "react"
   }
 ]

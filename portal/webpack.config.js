@@ -16,6 +16,10 @@ const devApplications = {
     header: {
         proxy: 'http://localhost:3000',
         rewrite: true
+    },
+    reactchild: {
+        proxy: 'http://localhost:3001',
+        rewrite: true
     }
 };
 

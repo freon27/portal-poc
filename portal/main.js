@@ -15,6 +15,38 @@ function normalisePathName(pathname) {
     return pathname;
 }
 
+const xmlToAssets = (xml) => {
+    var dom = document.createElement('html');
+    dom.innerHTML = xml;
+    const linksEls = dom.querySelectorAll('link[rel="stylesheet"]');
+    const scriptsEls = dom.querySelectorAll('script[type="text/javascript"]');
+    return {
+        styles: Array.from(linksEls).map(el => el.getAttribute('href')),
+        scripts: Array.from(scriptsEls).map(el => el.getAttribute('src')).filter(src => !src.match(/zone\.js/))
+    };
+}
+
+const transformOptsWithAssets = (opts) => {
+    const url = `${opts.baseHref}/index.html`;
+    return new Promise((resolve, reject) => {
+        const req = new XMLHttpRequest();
+        req.onreadystatechange = (event) => {
+            if (req.readyState === XMLHttpRequest.DONE) {
+                if (req.status >= 200 && req.status < 400) {
+                    const res = xmlToAssets(req.responseText);
+                    opts.styles = res.styles;
+                    opts.scripts = res.scripts;
+                    resolve(null);
+                } else {
+                    reject(`Try to load ${url}, status : ${this.status} => ${this.statusText}`);
+                }
+            }
+        };
+        req.open('GET', url, true);
+        req.send(null);
+    });
+};
+
 const hashCode = (str) => {
     var hash = 0;
     if (str.length == 0) return hash.toString();
@@ -43,6 +75,16 @@ const loadScriptTag = (url) => {
     };
 };
 
+const loadStyleTag = (url) => {
+
+    const style = document.createElement('link');
+    style.rel = 'stylesheet';
+    style.type = 'text/css';
+    style.href = url;
+    document.head.appendChild(style);
+
+};
+
 for (const application of applications) {
     console.log(`registering ${application.name}`);
     registerApplication(
@@ -67,15 +109,15 @@ for (const application of applications) {
                     break;
                 case ApplicationType.REACT:
                     console.log(`Loading react app ${application.name}`);
-                    return SystemJS.import(`${application.baseHref}/static/elements.js`)
-                    return SystemJS.import(`${application.baseHref}/static/elements.css`)
+                    loadStyleTag(`${application.baseHref}/static/elements.css`)
+                    return SystemJS.import(`${application.baseHref}/static/elements.js`);
                     //return loadScriptTag(`${application.baseHref}/static/js/${buildArtefact}`);
 
             }
         })(),
         () => {
-            window["webpackJsonp"] = null; //FIXME: THIS IS NOT GOOD!
-            return normalisePathName(window.location.pathname).startsWith(application.matchRoute);
+             //window["webpackJsonp"] = null; //FIXME: THIS IS NOT GOOD!
+            return application.matchRoute === '**' || normalisePathName(window.location.pathname).startsWith(application.matchRoute);
         }
     );
 }
