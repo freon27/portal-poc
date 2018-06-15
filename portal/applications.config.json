@@ -1,14 +1,23 @@
 [
-    {
-        "name": "app1",
-        "selector": "app1-root",
-        "baseHref": "/app1",
-        "matchRoute": "app1"
-    },
-    {
-        "name": "app2",
-        "selector": "app2-root",
-        "baseHref": "/app2",
-        "matchRoute": "app2"
-    }
+  {
+    "name": "app1",
+    "selector": "app1-root",
+    "baseHref": "/app1",
+    "matchRoute": "app1",
+    "type": "ng-cli"
+  },
+  {
+    "name": "app2",
+    "selector": "app2-root",
+    "baseHref": "/app2",
+    "matchRoute": "app2",
+    "type": "ng-cli"
+  },
+  {
+    "name": "header",
+    "selector": "header",
+    "baseHref": "/header/",
+    "matchRoute": "header",
+    "type": "react"
+  }
 ]
