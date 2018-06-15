@@ -7,7 +7,7 @@ const reactLifecycles = singleSpaReact({
     React,
     ReactDOM,
     rootComponent: App,
-    domElementGetter: () => document.getElementById('header')
+    domElementGetter: () => document.getElementById('container')
 });
 
 export const bootstrap = [

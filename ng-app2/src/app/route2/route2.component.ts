@@ -3,15 +3,11 @@ import {ApplicationRef, Component, NgZone, OnInit, ViewEncapsulation} from '@ang
 @Component({
   selector: 'app-route2',
   template: `
-    <p>Button route 2 child</p>
-    <button (click)="toggleState()">Toggle State</button>
-    <div *ngIf="currentState">ON</div>
-    <div *ngIf="! currentState">OFF</div>
-    {{ currentState }}
-    <a routerLink="/route1">Route 1</a>
+    <h3>Route 2</h3>
+    <p>Click the button to see me update component state</p>
+    <button class="{{ currentState ? 'toggle-on' : 'toggle-off' }}" (click)="toggleState()">{{ currentState ? 'On' : 'Off' }}</button>
   `,
-  styles: [],
-  encapsulation: ViewEncapsulation.Native
+  styles: []
 })
 export class Route2Component implements OnInit {
 

@@ -1,10 +1,11 @@
 <!--The content below is only a placeholder and can be replaced.-->
 <div style="text-align:center">
   <h1>
-    Welcome to {{ title }}!
+    Angular {{ title }}!
   </h1>
   <button (click)="reverseIt()">Reverse</button>
   <button (click)="navigate('../app1')">App 1</button>
+  <button routerLinkActive="active" routerLink="/route1">Route 1</button>
+  <button routerLinkActive="active" routerLink="/route2">Route 2</button>
+  <router-outlet></router-outlet>
 </div>
-<router-outlet></router-outlet>
-

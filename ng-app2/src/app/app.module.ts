@@ -16,7 +16,7 @@ import {APP_BASE_HREF} from "@angular/common";
   imports: [
     BrowserModule,
     RouterModule.forRoot([
-
+      {path: '', pathMatch: 'full', redirectTo: 'route1'},
       {path: 'route2', component: Route2Component},
       {path: '**', component: Route1Component}
     ])

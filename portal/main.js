@@ -85,11 +85,30 @@ const loadStyleTag = (url) => {
 
 };
 
+const displayLoader = () => {
+    try {
+        document.getElementById('loader').style.display = 'none';
+    } catch (e) {}
+}
+
+const hideLoader = () => {
+    try {
+        document.getElementById('loader').style.display = 'block';
+    } catch (e) {
+    }
+}
+
+
+window.addEventListener('', () => {
+
+});
+
 for (const application of applications) {
     console.log(`registering ${application.name}`);
     registerApplication(
         application.name,
         (() => {
+
             switch (application.type) {
                 case ApplicationType.ANGULAR_CLI :
                     console.log(`Loading ng CLI app ${application.name}`);
@@ -116,8 +135,8 @@ for (const application of applications) {
             }
         })(),
         () => {
-             //window["webpackJsonp"] = null; //FIXME: THIS IS NOT GOOD!
-            return application.matchRoute === '**' || normalisePathName(window.location.pathname).startsWith(application.matchRoute);
+             window["webpackJsonp"] = null; //FIXME: THIS IS NOT GOOD!
+            return application.matchRoute === '**' || normalisePathName(window.location.pathname).startsWith(application.matchRoute); // FIXME: I need to do a full match up to next /
         }
     );
 }
