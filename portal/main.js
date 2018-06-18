@@ -20,6 +20,7 @@ const xmlToAssets = (xml) => {
     dom.innerHTML = xml;
     const linksEls = dom.querySelectorAll('link[rel="stylesheet"]');
     const scriptsEls = dom.querySelectorAll('script[type="text/javascript"]');
+    console.log(linksEls, scriptsEls);
     return {
         styles: Array.from(linksEls).map(el => el.getAttribute('href')),
         scripts: Array.from(scriptsEls).map(el => el.getAttribute('src')).filter(src => !src.match(/zone\.js/))
@@ -27,7 +28,7 @@ const xmlToAssets = (xml) => {
 }
 
 const transformOptsWithAssets = (opts) => {
-    const url = `${opts.baseHref}/index.html`;
+    const url = `${opts.baseHref}/`;
     return new Promise((resolve, reject) => {
         const req = new XMLHttpRequest();
         req.onreadystatechange = (event) => {
@@ -44,6 +45,40 @@ const transformOptsWithAssets = (opts) => {
         };
         req.open('GET', url, true);
         req.send(null);
+    });
+};
+
+const loadLinkTag = (url) => {
+    return () => {
+        return new Promise((resolve, reject) => {
+            const link = document.createElement('link');
+            link.onload = function () {
+                resolve();
+            };
+            link.onerror = err => {
+                reject(err);
+            };
+            link.href = url;
+            link.rel = 'stylesheet';
+            link.id = hashCode(url);
+            document.head.appendChild(link);
+        });
+    };
+};
+
+const loadAllAssets = (opts) => {
+    return new Promise((resolve, reject) => {
+        transformOptsWithAssets(opts).then(() => {
+            const scriptsPromise = opts.scripts.reduce(
+                (prev, fileName) => prev.then(loadScriptTag(`${opts.baseHref}/${fileName}`)),
+                Promise.resolve(undefined)
+            );
+            const stylesPromise = opts.styles.reduce(
+                (prev, fileName) => prev.then(loadLinkTag(`${opts.baseHref}/${fileName}`)),
+                Promise.resolve(undefined)
+            )
+            Promise.all([scriptsPromise, stylesPromise]).then(resolve, reject);
+        }, reject);
     });
 };
 
@@ -88,7 +123,8 @@ const loadStyleTag = (url) => {
 const displayLoader = () => {
     try {
         document.getElementById('loader').style.display = 'none';
-    } catch (e) {}
+    } catch (e) {
+    }
 }
 
 const hideLoader = () => {
@@ -128,14 +164,15 @@ for (const application of applications) {
                     break;
                 case ApplicationType.REACT:
                     console.log(`Loading react app ${application.name}`);
-                    loadStyleTag(`${application.baseHref}/static/elements.css`)
-                    return SystemJS.import(`${application.baseHref}/static/elements.js`);
-                    //return loadScriptTag(`${application.baseHref}/static/js/${buildArtefact}`);
+                    //loadStyleTag(`${application.baseHref}/static/elements.css`)
+                   // return SystemJS.import(`${application.baseHref}/static/elements.js`);
+                //return loadScriptTag(`${application.baseHref}/static/js/${buildArtefact}`);
+                    loadAllAssets(application);
 
             }
         })(),
         () => {
-             window["webpackJsonp"] = null; //FIXME: THIS IS NOT GOOD!
+            window["webpackJsonp"] = null; //FIXME: THIS IS NOT GOOD!
             return application.matchRoute === '**' || normalisePathName(window.location.pathname).startsWith(application.matchRoute); // FIXME: I need to do a full match up to next /
         }
     );

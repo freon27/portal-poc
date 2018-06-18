@@ -16,7 +16,7 @@
   {
     "name": "reactchild",
     "selector": "reactchild",
-    "baseHref": "/react",
+    "baseHref": "/react/",
     "matchRoute": "react",
     "type": "react"
   },
