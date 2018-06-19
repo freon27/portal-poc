@@ -41,6 +41,7 @@
     "webpack-dev-server": "^2.9.7"
   },
   "dependencies": {
+    "route-parser": "0.0.5",
     "single-spa": "^3.9.0",
     "single-spa-angular-cli": "0.4.1",
     "zone.js": "^0.8.14"

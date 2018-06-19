@@ -14,16 +14,23 @@
     "type": "ng-cli"
   },
   {
+    "name": "app3",
+    "selector": "app3-root",
+    "baseHref": "/app3",
+    "matchRoute": "app3",
+    "type": "ng-cli"
+  },
+  {
     "name": "reactchild",
     "selector": "reactchild",
-    "baseHref": "/react/",
+    "baseHref": "/react",
     "matchRoute": "react",
     "type": "react"
   },
   {
     "name": "header",
     "selector": "header",
-    "baseHref": "/header/",
+    "baseHref": "/header",
     "matchRoute": "**",
     "type": "react"
   }

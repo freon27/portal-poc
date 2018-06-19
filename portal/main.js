@@ -1,6 +1,7 @@
 import {registerApplication, start} from 'single-spa';
 import {loader} from 'single-spa-angular-cli';
 import 'babel-polyfill';
+import {PortalRouter} from "./PortalRouter";
 
 const applications = require('./applications.config.json');
 
@@ -9,11 +10,17 @@ const ApplicationType = Object.freeze({
     REACT: 'react'
 });
 
-function normalisePathName(pathname) {
-    pathname = pathname.replace(/^\//, '')
-    pathname = pathname.replace(/\/$/, '');
-    return pathname;
-}
+let router;
+window.$portalRouter = router = new PortalRouter(applications);
+
+// Monkeypath pushState to fire a custom event
+const pushState = history.pushState;
+history.pushState = function () {
+    pushState.apply(history, arguments);
+    console.log('push state monkeypatch', arguments);
+    const pushEvent = new CustomEvent('portal:pushState', { detail: arguments[2] });
+    document.dispatchEvent(pushEvent);
+};
 
 const xmlToAssets = (xml) => {
     var dom = document.createElement('html');
@@ -140,15 +147,12 @@ window.addEventListener('', () => {
 });
 
 for (const application of applications) {
-    console.log(`registering ${application.name}`);
     registerApplication(
         application.name,
         (() => {
 
             switch (application.type) {
                 case ApplicationType.ANGULAR_CLI :
-                    console.log(`Loading ng CLI app ${application.name}`);
-
                     const lifecycles = loader({
                         name: application.name,
                         selector: application.selector,
@@ -164,16 +168,20 @@ for (const application of applications) {
                     break;
                 case ApplicationType.REACT:
                     console.log(`Loading react app ${application.name}`);
-                    //loadStyleTag(`${application.baseHref}/static/elements.css`)
-                   // return SystemJS.import(`${application.baseHref}/static/elements.js`);
-                //return loadScriptTag(`${application.baseHref}/static/js/${buildArtefact}`);
-                    loadAllAssets(application);
+
+                    return () => {
+                        loadStyleTag(`${application.baseHref}/static/elements.css`);
+                        return SystemJS.import(`${application.baseHref}/static/elements.js`);
+                    }
+                    //return loadScriptTag(`${application.baseHref}/static/js/${buildArtefact}`);
+                    // loadAllAssets(application);
 
             }
         })(),
-        () => {
+        (location) => {
             window["webpackJsonp"] = null; //FIXME: THIS IS NOT GOOD!
-            return application.matchRoute === '**' || normalisePathName(window.location.pathname).startsWith(application.matchRoute); // FIXME: I need to do a full match up to next /
+            //console.log('location', location.pathname, router.match(location.pathname));
+            return router.match(application.name, location.pathname);
         }
     );
 }

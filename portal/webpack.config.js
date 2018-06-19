@@ -96,7 +96,7 @@ function getBabelConfig() {
 function getProxyConfig(applications, devApplications) {
     const proxy = {};
     for (app of applications) {
-        const path = app.baseHref + '/';
+        const path = app.baseHref;
         let target = `http://localhost:${PORT}/build/${path}`;
 
         let rewritePath = false;
@@ -122,25 +122,3 @@ function getProxyConfig(applications, devApplications) {
     }
     return proxy;
 }
-
-/**
- function getProxyConfig(applications, devApplications) {
-  const proxy = {};
-  for (const appName of Object.keys(devApplications)) {
-    const application = applications.find(a => a.name === appName);
-    const path = application.baseHref + '/';
-    proxy[path] = {
-      target: devApplications[appName],
-      pathRewrite: {
-        [path]: ''
-      },
-      bypass: function (req, res, proxyOptions) {
-        if (req.headers.accept.indexOf('html') !== -1) {
-          return '/index.html';
-        }
-      }
-    };
-  }
-  return proxy;
-}
- */
