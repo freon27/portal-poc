@@ -2,8 +2,8 @@
 
 ##Interapp Communication
 
-- Redux?
-- NG Service that listens for portal events and dispatches change?
+    - Redux?
+    - NG Service that listens for portal events and dispatches change?
 
 ##Dynamic routing
 
@@ -19,5 +19,13 @@
 
     this would work fine
 
-Could we define the base in local storage? Or props passed to loader?
+We could define the base in local storage? Or possibly in props passed to loader?
 
+
+
+If we have wildcards in paths then how does the webserver proxy correctly?
+It would have to implement wildcard re-routing:
+    
+    1. Could that work?
+    2. The webstart would have to download the service list so it could build 
+       its own   

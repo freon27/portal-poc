@@ -18,7 +18,7 @@ const pushState = history.pushState;
 history.pushState = function () {
     pushState.apply(history, arguments);
     console.log('push state monkeypatch', arguments);
-    const pushEvent = new CustomEvent('portal:pushState', { detail: arguments[2] });
+    const pushEvent = new CustomEvent('portal:pushState', {detail: arguments[2]});
     document.dispatchEvent(pushEvent);
 };
 
@@ -173,15 +173,26 @@ for (const application of applications) {
                         loadStyleTag(`${application.baseHref}/static/elements.css`);
                         return SystemJS.import(`${application.baseHref}/static/elements.js`);
                     }
-                    //return loadScriptTag(`${application.baseHref}/static/js/${buildArtefact}`);
-                    // loadAllAssets(application);
+                //return loadScriptTag(`${application.baseHref}/static/js/${buildArtefact}`);
+                // loadAllAssets(application);
 
             }
         })(),
         (location) => {
             window["webpackJsonp"] = null; //FIXME: THIS IS NOT GOOD!
             //console.log('location', location.pathname, router.match(location.pathname));
-            return router.match(application.name, location.pathname);
+
+            const match = router.match(application.name, location.pathname);
+
+            if (match) {
+                if (application.matchRoute !== '**') { // TODO: still needed?
+                    application.baseHref = location.pathname;
+                }
+                console.log('MATCHED', application);
+            }
+
+
+            return match;
         }
     );
 }
